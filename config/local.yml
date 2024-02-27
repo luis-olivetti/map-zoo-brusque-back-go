@@ -1,2 +1,4 @@
 http:
   port: 8000
+jwt:
+  secret: "abcdefg"

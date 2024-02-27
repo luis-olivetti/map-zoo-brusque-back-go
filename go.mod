@@ -4,6 +4,7 @@ go 1.21.3
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/wire v0.6.0
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.27.0

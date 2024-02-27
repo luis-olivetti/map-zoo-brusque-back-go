@@ -1,4 +1,4 @@
-package resp
+package helper
 
 import (
 	"net/http"
