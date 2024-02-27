@@ -24,7 +24,7 @@ func NewServerHTTP(
 		})
 	})
 
-	router.GET("/user/login", userHandler.Login)
+	router.POST("/user/login", userHandler.Login)
 
 	return router
 }

@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/luis-olivetti/map-zoo-brusque-back-go/internal/request"
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/internal/service"
 	resp "github.com/luis-olivetti/map-zoo-brusque-back-go/pkg/helper"
 )
@@ -23,9 +26,22 @@ func NewUserHandler(handler *Handler, userService service.UserService) UserHandl
 }
 
 func (h *userHandler) Login(ctx *gin.Context) {
-	h.logger.Info("Login")
+	var loginRequest request.LoginRequest
 
-	r, _ := h.userService.GenerateJWT("test", "test")
+	if err := ctx.ShouldBindJSON(&loginRequest); err != nil {
+		h.logger.Error("Invalid request" + err.Error())
+		resp.HandleError(ctx, http.StatusBadRequest, 1, "Bad Request", nil)
+		return
+	}
 
-	resp.HandleSuccess(ctx, r)
+	authorized, err := h.userService.Authenticate(loginRequest.Username, loginRequest.Password)
+	if err != nil || !authorized {
+		h.logger.Error("Unauthorized")
+		resp.HandleError(ctx, http.StatusUnauthorized, 1, "Unauthorized", nil)
+		return
+	}
+
+	response, _ := h.userService.GenerateJWT(loginRequest.Username)
+
+	resp.HandleSuccess(ctx, response)
 }

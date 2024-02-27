@@ -8,7 +8,8 @@ import (
 )
 
 type UserService interface {
-	GenerateJWT(user, password string) (*model.UserJWT, error)
+	Authenticate(user, password string) (bool, error)
+	GenerateJWT(user string) (*model.UserJWT, error)
 }
 
 type userService struct {
@@ -23,7 +24,7 @@ func NewUserService(service *Service, config *viper.Viper) UserService {
 	}
 }
 
-func (s *userService) GenerateJWT(user, password string) (*model.UserJWT, error) {
+func (s *userService) GenerateJWT(user string) (*model.UserJWT, error) {
 	secret := s.config.GetString("jwt.secret")
 
 	s.logger.Info("generating jwt", zapcore.Field{Key: "secret", Type: zapcore.StringType, String: secret})
@@ -33,4 +34,14 @@ func (s *userService) GenerateJWT(user, password string) (*model.UserJWT, error)
 	return &model.UserJWT{
 		Token: token,
 	}, err
+}
+
+func (s *userService) Authenticate(user, password string) (bool, error) {
+	hashedUser := helper.GenerateSHA256(user)
+	hashedPassword := helper.GenerateSHA256(password)
+
+	storedUsername := s.config.GetString("login.username")
+	storedPassword := s.config.GetString("login.password")
+
+	return hashedUser == storedUsername && hashedPassword == storedPassword, nil
 }
