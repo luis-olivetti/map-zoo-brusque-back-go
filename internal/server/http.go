@@ -6,10 +6,12 @@ import (
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/internal/middleware"
 	resp "github.com/luis-olivetti/map-zoo-brusque-back-go/pkg/helper"
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/pkg/log"
+	"github.com/spf13/viper"
 )
 
 func NewServerHTTP(
 	logger *log.Logger,
+	conf *viper.Viper,
 	userHandler handler.UserHandler,
 	markerHandler handler.MarkerHandler,
 ) *gin.Engine {
@@ -18,6 +20,7 @@ func NewServerHTTP(
 	router := gin.Default()
 	router.Use(
 		middleware.CORSMiddleware(),
+		middleware.JWTMiddleware(conf),
 	)
 	router.GET("/", func(ctx *gin.Context) {
 		resp.HandleSuccess(ctx, map[string]interface{}{

@@ -25,7 +25,7 @@ func newApp(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), e
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
 	markerService := service.NewMarkerService(serviceService)
 	markerHandler := handler.NewMarkerHandler(handlerHandler, markerService)
-	engine := server.NewServerHTTP(logger, userHandler, markerHandler)
+	engine := server.NewServerHTTP(logger, viperViper, userHandler, markerHandler)
 	return engine, func() {
 	}, nil
 }
