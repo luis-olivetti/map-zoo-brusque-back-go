@@ -23,7 +23,9 @@ func newApp(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), e
 	serviceService := service.NewService(logger)
 	userService := service.NewUserService(serviceService, viperViper)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	engine := server.NewServerHTTP(logger, userHandler)
+	markerService := service.NewMarkerService(serviceService)
+	markerHandler := handler.NewMarkerHandler(handlerHandler, markerService)
+	engine := server.NewServerHTTP(logger, userHandler, markerHandler)
 	return engine, func() {
 	}, nil
 }
@@ -32,6 +34,6 @@ func newApp(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), e
 
 var ServerSet = wire.NewSet(server.NewServerHTTP)
 
-var ServiceSet = wire.NewSet(service.NewService, service.NewUserService)
+var ServiceSet = wire.NewSet(service.NewService, service.NewUserService, service.NewMarkerService)
 
-var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler)
+var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler, handler.NewMarkerHandler)

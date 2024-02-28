@@ -11,6 +11,7 @@ import (
 func NewServerHTTP(
 	logger *log.Logger,
 	userHandler handler.UserHandler,
+	markerHandler handler.MarkerHandler,
 ) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 
@@ -25,6 +26,12 @@ func NewServerHTTP(
 	})
 
 	router.POST("/user/login", userHandler.Login)
+
+	router.GET("/marker", markerHandler.GetAll)
+	router.GET("/marker/:id", markerHandler.GetByID)
+	router.POST("/marker", markerHandler.Create)
+	router.PUT("/marker/:id", markerHandler.Update)
+	router.DELETE("/marker/:id", markerHandler.Delete)
 
 	return router
 }

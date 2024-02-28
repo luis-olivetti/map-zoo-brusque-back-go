@@ -1,0 +1,11 @@
+POST http://localhost:8000/marker HTTP/1.1
+Host: localhost:8000
+Content-Type: application/json
+
+{
+    "name": "Marianinha de cabeça amarela",
+    "description": "Marianinha de cabeça amarela",
+    "lat": -27.09420459433378,
+    "lng": -48.92141707609291,
+    "icon": "assets/images/icons/bird.png"
+}

@@ -18,11 +18,13 @@ var ServerSet = wire.NewSet(server.NewServerHTTP)
 var ServiceSet = wire.NewSet(
 	service.NewService,
 	service.NewUserService,
+	service.NewMarkerService,
 )
 
 var HandlerSet = wire.NewSet(
 	handler.NewHandler,
 	handler.NewUserHandler,
+	handler.NewMarkerHandler,
 )
 
 func newApp(*viper.Viper, *log.Logger) (*gin.Engine, func(), error) {

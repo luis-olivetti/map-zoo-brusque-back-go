@@ -30,14 +30,14 @@ func (h *userHandler) Login(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&loginRequest); err != nil {
 		h.logger.Error("Invalid request" + err.Error())
-		resp.HandleError(ctx, http.StatusBadRequest, 1, "Bad Request", nil)
+		resp.HandleError(ctx, http.StatusBadRequest, "Bad Request", nil)
 		return
 	}
 
 	authorized, err := h.userService.Authenticate(loginRequest.Username, loginRequest.Password)
 	if err != nil || !authorized {
 		h.logger.Error("Unauthorized")
-		resp.HandleError(ctx, http.StatusUnauthorized, 1, "Unauthorized", nil)
+		resp.HandleError(ctx, http.StatusUnauthorized, "Unauthorized", nil)
 		return
 	}
 

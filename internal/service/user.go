@@ -4,7 +4,6 @@ import (
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/internal/model"
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/pkg/helper"
 	"github.com/spf13/viper"
-	"go.uber.org/zap/zapcore"
 )
 
 type UserService interface {
@@ -26,8 +25,6 @@ func NewUserService(service *Service, config *viper.Viper) UserService {
 
 func (s *userService) GenerateJWT(user string) (*model.UserJWT, error) {
 	secret := s.config.GetString("jwt.secret")
-
-	s.logger.Info("generating jwt", zapcore.Field{Key: "secret", Type: zapcore.StringType, String: secret})
 
 	token, err := helper.GenerateJWT(user, secret)
 
