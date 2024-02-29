@@ -124,6 +124,38 @@ func TestUserHandler_Login_InvalidRequest(t *testing.T) {
 	assert.Equal(t, expectedJSON, recorder.Body.String())
 }
 
+func TestUserHandler_Login_EmptyRequest(t *testing.T) {
+	// Arrange
+	recorder := httptest.NewRecorder()
+	ctx := getTestGinContext(recorder)
+
+	handlerMock := &Handler{
+		logger: createNoOpLogger(),
+	}
+
+	userServiceMock := new(mockUserService)
+	userServiceMock.On("Authenticate", "", "").Return(false, nil)
+
+	fakeJWT := &model.UserJWT{
+		Token: "fakeJWT",
+	}
+	userServiceMock.On("GenerateJWT", "test").Return(fakeJWT, nil)
+
+	handler := NewUserHandler(handlerMock, userServiceMock)
+
+	invalidJsonBody := "{}"
+	makePost(ctx, invalidJsonBody)
+
+	// Act
+	handler.Login(ctx)
+
+	// Assert
+	assert.Equal(t, http.StatusUnauthorized, recorder.Code)
+
+	expectedJSON := `{"message":"Unauthorized","data":{}}`
+	assert.Equal(t, expectedJSON, recorder.Body.String())
+}
+
 func getTestGinContext(recorder *httptest.ResponseRecorder) *gin.Context {
 	gin.SetMode(gin.TestMode)
 

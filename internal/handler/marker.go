@@ -8,7 +8,6 @@ import (
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/internal/request"
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/internal/service"
 	"github.com/luis-olivetti/map-zoo-brusque-back-go/pkg/helper"
-	resp "github.com/luis-olivetti/map-zoo-brusque-back-go/pkg/helper"
 )
 
 type MarkerHandler interface {
@@ -27,13 +26,13 @@ type markerHandler struct {
 func (m *markerHandler) Create(ctx *gin.Context) {
 	var markerRequest request.MarkerRequest
 	if err := ctx.ShouldBindJSON(&markerRequest); err != nil {
-		resp.HandleError(ctx, http.StatusBadRequest, "Bad Request", nil)
+		helper.HandleError(ctx, http.StatusBadRequest, "Bad Request", nil)
 		return
 	}
 
 	if err := helper.ValidateRequiredFields(markerRequest); err != nil {
 		m.logger.Logger.Error("Error validating required fields:" + err.Error())
-		resp.HandleError(ctx, http.StatusUnprocessableEntity, "Unprocessable Entity", nil)
+		helper.HandleError(ctx, http.StatusUnprocessableEntity, "Unprocessable Entity", nil)
 		return
 	}
 
@@ -46,11 +45,11 @@ func (m *markerHandler) Create(ctx *gin.Context) {
 
 	err := m.markerService.Create(&markerModel)
 	if err != nil {
-		resp.HandleError(ctx, http.StatusInternalServerError, "Internal Server Error", nil)
+		helper.HandleError(ctx, http.StatusInternalServerError, "Internal Server Error", nil)
 		return
 	}
 
-	resp.HandleSuccess(ctx, markerModel)
+	helper.HandleSuccess(ctx, markerModel)
 }
 
 func (m *markerHandler) Delete(ctx *gin.Context) {
